@@ -1,0 +1,48 @@
+name: CI Build and Test
+
+on:
+  push:
+    branches: [ main, alpha-release-merge ]
+  pull_request:
+    branches: [ main, alpha-release-merge ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # --- Backend (FastAPI) ---
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install backend dependencies
+        run: |
+          cd integration
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Backend syntax check
+        run: |
+          cd integration
+          python -m py_compile $(find . -name "*.py")
+
+      # --- Frontend (React) ---
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
