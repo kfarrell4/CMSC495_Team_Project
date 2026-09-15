@@ -24,7 +24,7 @@ jobs:
         run: |
           cd integration
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+      #    (Causing errors due to txt file missing) pip install -r requirements.txt
 
       - name: Backend syntax check
         run: |
